@@ -2,6 +2,7 @@ package com.yandex.practicum.middle_homework_4.data.work_manager
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.net.NetworkRequest
 import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -41,6 +42,9 @@ class WorkManagerServiceImp(
     private fun createConstraints(): Constraints {
         // Реализуйте метод, возвращающий Constraints
         // В условиях укажите необходимость наличия интернет соединения.
+        return Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
     }
 
     private fun createRequest(repeat: Long, delayed: Long): PeriodicWorkRequest {
