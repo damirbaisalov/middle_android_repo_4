@@ -2,7 +2,6 @@ package com.yandex.practicum.middle_homework_4.data.work_manager
 
 import android.content.ContentValues.TAG
 import android.content.Context
-import android.net.NetworkRequest
 import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -19,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.minutes
 
 class WorkManagerServiceImp(
     private val context: Context,
