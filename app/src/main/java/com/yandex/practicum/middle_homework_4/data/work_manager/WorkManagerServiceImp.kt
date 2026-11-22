@@ -19,18 +19,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.minutes
 
 class WorkManagerServiceImp(
     private val context: Context,
     private val settingsRepository: SettingsRepository,
     private val scope: CoroutineScope = CoroutineScope(Job() + Dispatchers.IO)
 ) : WorkManagerService {
-    private var period:Long = DEFAULT_REFRESH_PERIOD
+    private var period: Long = DEFAULT_REFRESH_PERIOD
     private var delayed: Long = FIST_LAUNCH_DELAY
 
     init {
         scope.launch {
-            settingsRepository.state.collect{ setting ->
+            settingsRepository.state.collect { setting ->
                 period = setting.periodic
                 delayed = setting.delayed
                 Log.i(TAG, "DataStoreService get data : period = $period | delayed $delayed")
@@ -53,6 +54,13 @@ class WorkManagerServiceImp(
         // Интервал запуска задачи (в минутах)  = repeat.
         // Отсрочка запуска задачи в (секундах) = delayed.
         // Не забудьте в билдере указать constraints.
+        return PeriodicWorkRequestBuilder<RefreshWorker>(
+            repeatInterval = repeat,
+            repeatIntervalTimeUnit = TimeUnit.MINUTES,
+        )
+            .setInitialDelay(delayed, TimeUnit.SECONDS)
+            .setConstraints(networkConstraints)
+            .build()
     }
 
     override fun launchRefreshWork() {
