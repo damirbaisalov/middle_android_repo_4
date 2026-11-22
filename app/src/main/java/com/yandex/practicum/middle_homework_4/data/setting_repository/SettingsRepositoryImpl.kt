@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -38,6 +39,11 @@ class SettingsRepositoryImpl(
             // Для periodic ключ - REFRESH_PERIOD_KEY
             // Для delayed ключ - FIRST_LAUNCH_DELAY_KEY
             // После записи данных обновите _state
+            dataStore.edit {
+                it[REFRESH_PERIOD_KEY] = periodic
+                it[FIRST_LAUNCH_DELAY_KEY] = delayed
+            }
+            _state.value = SettingContainer(periodic, delayed)
         }
     }
 
@@ -48,6 +54,11 @@ class SettingsRepositoryImpl(
             // Для periodic ключ - REFRESH_PERIOD_KEY, значение по умолчанию SettingContainer.DEFAULT_REFRESH_PERIOD
             // Для delayed ключ - FIRST_LAUNCH_DELAY_KEY, значение по умолчанию SettingContainer.FIST_LAUNCH_DELAY
             // После чтения данных обновите _state
+            val preferences = dataStore.data.first()
+            _state.value = SettingContainer(
+                periodic = preferences[REFRESH_PERIOD_KEY] ?: SettingContainer.DEFAULT_REFRESH_PERIOD,
+                delayed = preferences[FIRST_LAUNCH_DELAY_KEY] ?: SettingContainer.FIST_LAUNCH_DELAY
+            )
         }
     }
 }
