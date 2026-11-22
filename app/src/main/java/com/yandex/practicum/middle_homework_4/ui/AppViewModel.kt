@@ -6,6 +6,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.compose.LazyPagingItems
 import com.yandex.practicum.middle_homework_4.data.NewsRemoteMediator
 import com.yandex.practicum.middle_homework_4.data.setting_repository.SettingContainer
@@ -37,7 +38,7 @@ class AppViewModel(
     }
 
 
-    fun getNews(): Flow<PagingData<News>> = pager.flow
+    fun getNews(): Flow<PagingData<News>> = pager.flow.cachedIn(viewModelScope)
     // Допишите реализацию метода, используя класс Pager()
     // Для реализации фабрики используйте newsDatabase
     // Реализуйте NewsRemoteMediator() используя newsService и newsDatabase
